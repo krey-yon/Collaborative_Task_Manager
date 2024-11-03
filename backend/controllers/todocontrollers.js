@@ -4,11 +4,8 @@ const handleCreateTodo = async (req, res) => {
   const { title, content } = req.body;
   try {
     const todo = new Todo({
-      todoId: req.user.todoId,
-      owner: req.user.id,
       title: title,
       content: content,
-      tasks: req.body.tasks
     });
     await todo.save();
 
