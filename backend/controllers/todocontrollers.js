@@ -1,11 +1,10 @@
 import Todo from "../models/ToDo.model.js";
 
 const handleCreateTodo = async (req, res) => {
-  const { title, content } = req.body;
+  const { title } = req.body;
   try {
     const todo = new Todo({
       title: title,
-      content: content,
     });
     await todo.save();
 

@@ -7,7 +7,6 @@ const TodoListSchema = new mongoose.Schema(
       todoId: { type: String, default: uuidv4, unique: true },
       owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
       title: String,
-      content: String,
       tasks: [TaskSchema],
       collaborators: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     },
