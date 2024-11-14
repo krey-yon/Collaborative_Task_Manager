@@ -19,9 +19,6 @@ connectToDatabase(url)
 //middleware
 app.use(express.json());
 
-
-
-
 app.use('/user', router);
 app.use('/todo', todoRouter);
 

@@ -34,6 +34,36 @@ const handleDeleteTodo = async (req, res) => {
   }
 };
 
+const addCollaborator = async (req, res) => {
+  const { todoId, userId } = req.body;
 
+  try {
+    const todoList = await Todo.findById(todoId);
+    if (!todoList.collaborators.includes(userId)) {
+      todoList.collaborators.push(userId);
+      await todoList.save();
+    }
+    res.status(200).json(todoList);
+  } catch (error) {
+    res.status(500).json({ error: 'Error adding collaborator' });
+  }
+};
 
-export { handleCreateTodo, handleGetTodos, handleDeleteTodo };
+const removeCollaborator = async (req, res) => {
+  const { todoId, userId } = req.body;
+
+  try {
+    const todoList = await Todo.findById(todoId);
+    const index = todoList.collaborators.indexOf(userId);
+    if (index > -1) {
+      todoList.collaborators.splice(index, 1);
+      await todoList.save();
+    }
+    res.status(200).json(todoList);
+  }
+  catch (error) {
+    res.status(500).json({ error: 'Error removing collaborator' });
+  }
+}
+
+export { handleCreateTodo, handleGetTodos, handleDeleteTodo, addCollaborator, removeCollaborator };
