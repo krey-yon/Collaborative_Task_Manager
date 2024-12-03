@@ -4,18 +4,16 @@ import connectToDatabase from "./connect.js";
 import router from "./routes/auth.js";
 import todoRouter from "./routes/todo.js";
 import taskRoutes  from './routes/task.js'
-//gpt
-import http from "http";
 import { Server } from "socket.io";
-
+import http from "http";
 
 const app = express();
 const port = process.env.PORT || 3000;
 const url = process.env.MONGO_URI;
 
-//gpt
+//gpt code
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, { cors: { origin: '*' } });
 
 connectToDatabase(url)
   .then(() => {
@@ -32,13 +30,14 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
-io.on("connection", (socket) => {
-  socket.on("joinList", (todoId) => {
+
+io.on('connection', (socket) => {
+  socket.on('joinList', (todoId) => {
     socket.join(todoId);
   });
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
   });
 });
 
