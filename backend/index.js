@@ -5,7 +5,9 @@ import router from "./routes/auth.js";
 import todoRouter from "./routes/todo.js";
 import taskRoutes  from './routes/task.js'
 import { Server } from "socket.io";
+import cookieParser from "cookie-parser";
 import http from "http";
+import cors from "cors";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -25,6 +27,9 @@ connectToDatabase(url)
 
 //middleware
 app.use(express.json());
+app.use(cookieParser());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+
 //gpt
 app.use((req, res, next) => {
   req.io = io;
@@ -32,6 +37,7 @@ app.use((req, res, next) => {
 });
 
 io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
   socket.on('joinList', (todoId) => {
     socket.join(todoId);
   });
