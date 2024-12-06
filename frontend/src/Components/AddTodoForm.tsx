@@ -10,6 +10,7 @@ const AddTodoForm: React.FC<Props> = ({ onTodoAdded }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // console.log("handlesubmit")
     if (!title.trim()) return;
 
     const newTodo = await createTodo(title);

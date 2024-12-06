@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_BASE_URL = "http://localhost:3000"; // Replace with your backend URL
 
@@ -11,5 +12,6 @@ export const login = async (email: string, password: string) => {
 
 export const logout = async () => {
   await axios.get(`${API_BASE_URL}/user/signout`, { withCredentials: true });
+  toast.success("Logged out successfully");
   localStorage.removeItem("token");
 };

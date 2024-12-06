@@ -5,6 +5,7 @@ const handleCreateTodo = async (req, res) => {
   try {
     const todo = new Todo({
       title: title,
+      owner: req.user._id,
     });
     await todo.save();
 
@@ -16,7 +17,9 @@ const handleCreateTodo = async (req, res) => {
 
 const handleGetTodos = async (req, res) => {
   try {
-    const todos = await Todo.find({ user: req.user._id });
+    const todos = await Todo.find({
+      $or: [{ owner: req.user._id }, { collaborators: req.user._id }],
+    });
     res.status(200).json({ todos });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -66,4 +69,37 @@ const removeCollaborator = async (req, res) => {
   }
 }
 
-export { handleCreateTodo, handleGetTodos, handleDeleteTodo, addCollaborator, removeCollaborator };
+const updateTodoText = async (req, res) => {
+  const { todoId } = req.params;
+  const { text } = req.body;
+  const userId = req.user.id; // Extracted from the authenticated token
+
+  // console.log(todoId, text, userId);
+
+  try {
+    // Find the todo
+    const todo = await Todo.findById(todoId);
+
+    if (!todo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    // Check if the user is the owner or a collaborator
+    // if (todo.owner.toString() !== userId && !todo.collaborators.includes(userId)) {
+    //   return res.status(403).json({ error: "Unauthorized to update this todo" });
+    // }
+
+    // Update the todo text
+    todo.title = text;
+    await todo.save();
+    // Notify clients via socket
+    req.io.to(todoId).emit("todo:update", { todoId, text });
+
+    res.status(200).json({ message: "Todo updated successfully", todo });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { handleCreateTodo, handleGetTodos, handleDeleteTodo, addCollaborator, removeCollaborator, updateTodoText };

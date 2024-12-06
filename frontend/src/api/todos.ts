@@ -25,10 +25,21 @@ export const deleteTodo = async (id: string) => {
 
 export const addCollaborator = async (todoId: string, userId: string) => {
   const response = await axios.post(`${API_BASE_URL}/todo/add-collaborator`, { todoId, userId }, config);
+  console.log("collaborator added");
   return response.data;
 };
 
 export const removeCollaborator = async (todoId: string, userId: string) => {
   const response = await axios.delete(`${API_BASE_URL}/todo/remove-collaborator`, { data: { todoId, userId }, ...config });
+  console.log("collaborator removed");
+  return response.data;
+};
+
+export const updateTodoTextAPI = async (todoId: string, text: string) => {
+  const response = await axios.put(
+    `${API_BASE_URL}/todo/${todoId}/update-text`,
+    { text },
+    { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+  );
   return response.data;
 };
